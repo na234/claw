@@ -5,47 +5,65 @@ public class DragObject : MonoBehaviour
 {
     float x;
     float y;
+    Vector2 dist;
     public bool drag = false;
     bool trigger = false;
-    public GameObject connectedObject;
+    public GameObject connectedObject = null;
+    Collider2D col2D;
+    Collider2D[] result;
+
+    void Awake()
+    {
+        col2D = GetComponent<Collider2D>();
+        result = new Collider2D[1];
+    }
 
     // Update is called once per frame
     void Update()
     {
         x = Input.mousePosition.x;
         y = Input.mousePosition.y;
+        if (!drag)
+        {
+            OverlapCount();
+        }
     }
 
+    void OnMouseDown()
+    {
+        drag = true;
+    }
     void OnMouseUp()
     {
         drag = false;
+        dist = transform.position - Input.mousePosition;
     }
     void OnMouseDrag()
     {
-        drag = true;
         if (trigger)
         {
             return;
         }
         transform.root.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 10f));
     }
-    void OnTriggerStay2D(Collider2D other)
+    void OverlapCount()
     {
-        if (!drag)
+        int count = col2D.OverlapCollider(new ContactFilter2D(), result);
+        Debug.Log("Overlap=" + count);
+        if (count > 0)
         {
-            return;
+            if (connectedObject == null)
+            {
+                Debug.Log(result[0].name);
+                Vector3 pos = this.transform.root.position;
+                pos.y -= 10f;
+                result[0].transform.root.position = pos;
+                connectedObject = result[0].gameObject;
+            }
         }
-        //other.transform.root.position = new Vector3(transform.root.position.x, transform.root.position.y - 10f, 10f);
-        transform.root.position = new Vector3(other.transform.root.position.x, other.transform.root.position.y - 10f, 10f);
-        connectedObject = other.transform.gameObject;
-    }
-    void OnTriggerEnter2D()
-    {
-        //trigger = true;
-    }
-    void OnTriggerExit2D()
-    {
-        trigger = false;
-        connectedObject = null;
+        else
+        {
+            connectedObject = null;
+        }
     }
 }

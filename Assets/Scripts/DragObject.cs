@@ -3,48 +3,45 @@ using System.Collections;
 
 public class DragObject : MonoBehaviour
 {
-    float x;
-    float y;
-    Vector2 dist;
+    Vector3 mousePosition;
+    Vector3 dist;
     public bool drag = false;
-    bool trigger = false;
-    public GameObject connectedObject = null;
+    public GameObject aboveObject = null;
     Collider2D col2D;
-    Collider2D[] result;
+    Collider2D[] result = new Collider2D[1];
 
-    void Awake()
+    void Start()
     {
         col2D = GetComponent<Collider2D>();
-        result = new Collider2D[1];
     }
 
     // Update is called once per frame
     void Update()
     {
-        x = Input.mousePosition.x;
-        y = Input.mousePosition.y;
-        if (!drag)
+        float x = Input.mousePosition.x;
+        float y = Input.mousePosition.y;
+        mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 10f));
+        if (!drag && aboveObject != null)
         {
-            OverlapCount();
+            Vector3 pos = aboveObject.transform.position;
+            pos.y -= 35f;
+            transform.root.position = pos;
         }
     }
 
     void OnMouseDown()
     {
         drag = true;
+        dist = transform.root.position - mousePosition;
     }
     void OnMouseUp()
     {
         drag = false;
-        dist = transform.position - Input.mousePosition;
     }
     void OnMouseDrag()
     {
-        if (trigger)
-        {
-            return;
-        }
-        transform.root.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 10f));
+        transform.root.position = mousePosition + dist;
+        OverlapCount();
     }
     void OverlapCount()
     {
@@ -52,18 +49,12 @@ public class DragObject : MonoBehaviour
         Debug.Log("Overlap=" + count);
         if (count > 0)
         {
-            if (connectedObject == null)
-            {
-                Debug.Log(result[0].name);
-                Vector3 pos = this.transform.root.position;
-                pos.y -= 10f;
-                result[0].transform.root.position = pos;
-                connectedObject = result[0].gameObject;
-            }
+            Debug.Log(result[0].name);
+            aboveObject = result[0].transform.root.gameObject;
         }
         else
         {
-            connectedObject = null;
+            aboveObject = null;
         }
     }
 }

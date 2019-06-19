@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MovePlayerVertical : MonoBehaviour
+public class MovePlayer: MonoBehaviour
 {
     Camera mainCamera;
     GameObject player;
     InputField inputField;
-    bool reverce = false;
     Vector3 leftBottom;
     Vector3 rightTop;
 
@@ -27,19 +26,24 @@ public class MovePlayerVertical : MonoBehaviour
         {
             float value;
             float.TryParse(inputField.text, out value);
-            if (rightTop.y < pos.y)
+            player.transform.Translate(value, 0, 0);
+            pos = player.transform.position;
+            if (pos.x < leftBottom.x)
             {
-                reverce = true;
+                pos.x = leftBottom.x;
             }
-            else if (pos.y < leftBottom.y)
+            else if (rightTop.x < pos.x)
             {
-                reverce = false;
+                pos.x = rightTop.x;
             }
-            if (reverce)
+            if (pos.y < leftBottom.y)
             {
-                value *= -1f;
+                pos.y = leftBottom.y;
             }
-            pos.y += value;
+            else if (rightTop.y < pos.y)
+            {
+                pos.y = rightTop.y;
+            }
             player.transform.position = pos;
         }
     }

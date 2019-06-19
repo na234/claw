@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MovePlayerHorizontal : MonoBehaviour
 {
-    public Camera mainCamera;
+    Camera mainCamera;
     GameObject player;
     InputField inputField;
     bool reverce = false;
@@ -14,6 +14,7 @@ public class MovePlayerHorizontal : MonoBehaviour
 
     void Start()
     {
+        mainCamera = Camera.main;
         player = GameObject.Find("Player");
         inputField = GetComponentInChildren<InputField>();
         leftBottom = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0));

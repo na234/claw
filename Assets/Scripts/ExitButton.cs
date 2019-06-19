@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ExitButton : MonoBehaviour
 {
-    public void Quit()
+    public void Exit()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

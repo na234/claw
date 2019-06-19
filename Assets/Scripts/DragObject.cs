@@ -49,7 +49,7 @@ public class DragObject : MonoBehaviour
         Debug.Log("Overlap=" + count);
         if (count > 0)
         {
-            Debug.Log(result[0].name);
+            //Debug.Log(result[0].name);
             aboveObject = result[0].transform.root.gameObject;
         }
         else

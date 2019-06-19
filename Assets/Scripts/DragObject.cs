@@ -3,57 +3,58 @@ using System.Collections;
 
 public class DragObject : MonoBehaviour
 {
-    float x;
-    float y;
+    Vector3 mousePosition;
+    Vector3 dist;
     public bool drag = false;
-    bool trigger = false;
-    public GameObject connectedObject;
-    public GameObject parentObject;
+    public GameObject aboveObject = null;
+    Collider2D col2D;
+    Collider2D[] result = new Collider2D[1];
+
+    void Start()
+    {
+        col2D = GetComponent<Collider2D>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        x = Input.mousePosition.x;
-        y = Input.mousePosition.y;
-        if ( parentObject != null ) {
-            Vector3 pos = parentObject.transform.position;
-            transform.position = new Vector3(pos.x, pos.y+5, pos.z);
+        float x = Input.mousePosition.x;
+        float y = Input.mousePosition.y;
+        mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 10f));
+        if (!drag && aboveObject != null)
+        {
+            Vector3 pos = aboveObject.transform.position;
+            pos.y -= 35f;
+            transform.root.position = pos;
         }
     }
 
+    void OnMouseDown()
+    {
+        drag = true;
+        dist = transform.root.position - mousePosition;
+    }
     void OnMouseUp()
     {
         drag = false;
-        if ( trigger ) {
-            if ( connectedObject.transform.position.y > transform.position.y ) {
-                parentObject = connectedObject;
-            }
-        }
-
     }
     void OnMouseDrag()
     {
-        drag = true;
-        transform.root.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, 10f));
+        transform.root.position = mousePosition + dist;
+        OverlapCount();
     }
-    void OnTriggerStay2D(Collider2D other)
+    void OverlapCount()
     {
-        if (!drag)
+        int count = col2D.OverlapCollider(new ContactFilter2D(), result);
+        Debug.Log("Overlap=" + count);
+        if (count > 0)
         {
-            return;
+            Debug.Log(result[0].name);
+            aboveObject = result[0].transform.root.gameObject;
         }
-        //other.transform.root.position = new Vector3(transform.root.position.x, transform.root.position.y - 10f, 10f);
-        transform.root.position = new Vector3(other.transform.root.position.x, other.transform.root.position.y - 10f, 10f);
-        connectedObject = other.transform.gameObject;
-    }
-    void OnTriggerEnter2D()
-    {
-        trigger = true;
-    }
-    void OnTriggerExit2D()
-    {
-        trigger = false;
-        connectedObject = null;
-        parentObject = null;
+        else
+        {
+            aboveObject = null;
+        }
     }
 }

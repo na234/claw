@@ -16,7 +16,7 @@ public class MovePlayer: MonoBehaviour
         mainCamera = Camera.main;
         player = GameObject.Find("Player");
         inputField = GetComponentInChildren<InputField>();
-        leftBottom = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0));
+        leftBottom = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0, 0));
         rightTop = mainCamera.ViewportToWorldPoint(new Vector3(1, 1, 0));
     }
     void Update()

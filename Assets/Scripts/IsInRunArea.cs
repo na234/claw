@@ -28,6 +28,9 @@ public class IsInRunArea : MonoBehaviour {
 				if ( c.name.Equals("Rotate") ) {
 					c.GetComponent<RotatePlayer>().enabled = true;
 				}
+				if ( c.name.Equals("Move") ) {
+					c.GetComponent<MovePlayer>().enabled = true;
+				}
 			} else {
 				if ( c.name.Contains("Move (Horizontal)") ) {
 					c.GetComponent<MovePlayerHorizontal>().enabled = false;
@@ -37,6 +40,9 @@ public class IsInRunArea : MonoBehaviour {
 				}
 				if ( c.name.Equals("Rotate") ) {
 					c.GetComponent<RotatePlayer>().enabled = false;
+				}
+				if ( c.name.Equals("Move") ) {
+					c.GetComponent<MovePlayer>().enabled = false;
 				}
 			}
 		}
